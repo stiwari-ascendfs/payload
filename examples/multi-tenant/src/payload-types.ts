@@ -14,6 +14,8 @@ export interface Config {
     pages: Page;
     users: User;
     tenants: Tenant;
+    sites: Site;
+    'site-settings': SiteSetting;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -23,6 +25,8 @@ export interface Config {
     pages: PagesSelect<false> | PagesSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     tenants: TenantsSelect<false> | TenantsSelect<true>;
+    sites: SitesSelect<false> | SitesSelect<true>;
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -36,9 +40,9 @@ export interface Config {
   user: User & {
     collection: 'users';
   };
-  jobs?: {
+  jobs: {
     tasks: unknown;
-    workflows?: unknown;
+    workflows: unknown;
   };
 }
 export interface UserAuthOperations {
@@ -111,6 +115,68 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sites".
+ */
+export interface Site {
+  id: string;
+  url: string;
+  status?: ('active' | 'pending' | 'inactive') | null;
+  title: string;
+  language?: 'en-us' | null;
+  adminEmail: string;
+  isMain?: boolean | null;
+  lastUpdated?: string | null;
+  registered?: string | null;
+  users?: number | null;
+  settings?: (string | null) | SiteSetting;
+  tenant: string | Tenant;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: string;
+  siteId: string | Site;
+  tenant: string | Tenant;
+  url: string;
+  registered?: string | null;
+  lastUpdated?: string | null;
+  attributes?: {
+    public?: boolean | null;
+    archived?: boolean | null;
+    spam?: boolean | null;
+    deleted?: boolean | null;
+    mature?: boolean | null;
+  };
+  tenantUsers?:
+    | {
+        user: string | User;
+        role: 'user' | 'super-admin';
+        id?: string | null;
+      }[]
+    | null;
+  addNewUser?:
+    | {
+        newUsername?: string | null;
+        newEmail?: string | null;
+        newPassword?: string | null;
+        newRole?: ('super-admin' | 'user') | null;
+        id?: string | null;
+      }[]
+    | null;
+  generalSettings?: {
+    siteName?: string | null;
+    siteDescription?: string | null;
+    language?: 'en-us' | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -127,6 +193,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'tenants';
         value: string | Tenant;
+      } | null)
+    | ({
+        relationTo: 'sites';
+        value: string | Site;
+      } | null)
+    | ({
+        relationTo: 'site-settings';
+        value: string | SiteSetting;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -213,6 +287,70 @@ export interface TenantsSelect<T extends boolean = true> {
   name?: T;
   slug?: T;
   public?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sites_select".
+ */
+export interface SitesSelect<T extends boolean = true> {
+  url?: T;
+  status?: T;
+  title?: T;
+  language?: T;
+  adminEmail?: T;
+  isMain?: T;
+  lastUpdated?: T;
+  registered?: T;
+  users?: T;
+  settings?: T;
+  tenant?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  siteId?: T;
+  tenant?: T;
+  url?: T;
+  registered?: T;
+  lastUpdated?: T;
+  attributes?:
+    | T
+    | {
+        public?: T;
+        archived?: T;
+        spam?: T;
+        deleted?: T;
+        mature?: T;
+      };
+  tenantUsers?:
+    | T
+    | {
+        user?: T;
+        role?: T;
+        id?: T;
+      };
+  addNewUser?:
+    | T
+    | {
+        newUsername?: T;
+        newEmail?: T;
+        newPassword?: T;
+        newRole?: T;
+        id?: T;
+      };
+  generalSettings?:
+    | T
+    | {
+        siteName?: T;
+        siteDescription?: T;
+        language?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

@@ -6,6 +6,8 @@ import { fileURLToPath } from 'url'
 
 import { Pages } from './collections/Pages'
 import { Tenants } from './collections/Tenants'
+import { Sites } from './collections/Sites'
+import { SiteSettings } from './collections/SiteSettings' 
 import Users from './collections/Users'
 
 const filename = fileURLToPath(import.meta.url)
@@ -19,7 +21,7 @@ export default buildConfig({
     },
     user: 'users',
   },
-  collections: [Pages, Users, Tenants],
+  collections: [Pages, Users, Tenants, Sites, SiteSettings],
   db: mongooseAdapter({
     url: process.env.DATABASE_URI as string,
   }),

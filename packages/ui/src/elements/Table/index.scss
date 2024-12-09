@@ -9,7 +9,14 @@
     table {
       min-width: 100%;
     }
-
+    .row-options {
+      display: none;
+    }
+    
+    tr:hover .row-options {
+      display: table-cell;
+    }
+    
     thead {
       color: var(--theme-elevation-400);
 
